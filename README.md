@@ -4,6 +4,7 @@
 # Note
  - The purpose of this tool was to make Steam Client launch the game like usual behavior instead of launching the executable file directly.
  - If launching the steam game with `steam://launch/<AppId>`, `steam://run/<AppId>` and `steam://rungameid/<AppId>`, [Moonlight](https://github.com/moonlight-stream/moonlight-qt) may complain `Something went wrong on your host PC when starting the stream` with something about `Make sure you don't have any DRM-protected content open on your host PC`. To workaround this, set the main command of the application in [Sunshine](https://github.com/LizardByte/Sunshine)'s setting to this tool's executable file (see Usage below for the command format).
+ - Currently the tool doesn't support cross-privilege, if the game requires Administration to launch, the tool has to be run as Admin, too. Otherwise, you don't need to (or rather, shouldn't) run the tool as Admin.
 
 # Usage
 - `Sunshine-SteamGameLauncher.exe <SteamAppId> <Optional: Executable File Name>`
