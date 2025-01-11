@@ -1,0 +1,7 @@
+GetConsoleWindow
+GetWindowText
+GetWindowTextLength
+IsWindow
+PostMessage
+WM_SYSCOMMAND
+SC_MINIMIZE

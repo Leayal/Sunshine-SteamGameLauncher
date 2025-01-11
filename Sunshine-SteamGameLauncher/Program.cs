@@ -9,6 +9,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Threading;
+using Windows.Win32;
 
 namespace Leayal.Sunshine.SteamGameLauncher
 {
@@ -118,12 +119,26 @@ namespace Leayal.Sunshine.SteamGameLauncher
             var gameName = gameManifestDefinition.Value<string>("name");
             var path_gameDirectory = Path.GetFullPath(Path.Join("steamapps", "common", gameDirectoryName), steamLibPath);
 
+            bool startConsoleMinimized = false;
+
             string executableName = string.Empty;
+
             if (args.Length > 1)
             {
-                executableName = args[1];
+                for (int i = 1; i < args.Length; i++)
+                {
+                    if (string.Equals(args[i], "/min", StringComparison.OrdinalIgnoreCase))
+                    {
+                        startConsoleMinimized = true;
+                    }
+                    else if (string.IsNullOrEmpty(executableName))
+                    {
+                        executableName = args[i];
+                    }
+                }
             }
-            else
+        
+            if (string.IsNullOrEmpty(executableName))
             {
                 foreach (var binaryPath in Directory.EnumerateFiles(path_gameDirectory, "*.exe", new EnumerationOptions() { MaxRecursionDepth = 30, ReturnSpecialDirectories = false, RecurseSubdirectories = true, IgnoreInaccessible = true }))
                 {
@@ -139,6 +154,16 @@ namespace Leayal.Sunshine.SteamGameLauncher
             }
 
             Console.WriteLine("Launching game: " + gameName);
+
+            if (startConsoleMinimized && OperatingSystem.IsWindows())
+            {
+                var consoleWindowHandle = NativeMethods.GetConsoleWindow();
+                // if (!string.IsNullOrEmpty(NativeMethods.GetWindowTitle(consoleWindowHandle))) { }
+                if (!consoleWindowHandle.IsPsuedoConsole())
+                {
+                    consoleWindowHandle.MinimizeWindow();
+                }
+            }
 
             // Launch the game via Steam
             Process.Start(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "explorer.exe"), $"steam://launch/{steamAppId}/dialog")?.Dispose();
